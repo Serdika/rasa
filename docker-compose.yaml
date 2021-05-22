@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  rasa_xx:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.spacy_xx_ud
+    networks: ['rasa-network']
+    ports:
+    - 5005:5005
+    command:
+    - run
+    - --enable-api
+
+  duckling:
+    image: rasa/duckling:latest
+    networks: ['rasa-network']
+    ports:
+    - "8000:8000"
+
+networks: {rasa-network: {}}
