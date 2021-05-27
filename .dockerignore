@@ -4,6 +4,7 @@ docs
 **/*.pyc
 **/__pycache__
 !docker/configs
+!docker/spacy-training
 rasa/tests
 rasa/scripts
 data/
