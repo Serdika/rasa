@@ -14,17 +14,22 @@ WORKDIR /build
 
 # install dependencies
 RUN python -m venv /opt/venv && \
-  . /opt/venv/bin/activate && pip install --no-cache-dir -U 'pip<20'
+    . /opt/venv/bin/activate && pip install --no-cache-dir -U 'pip<20'
 RUN . /opt/venv/bin/activate && poetry install --extras spacy --no-dev --no-root --no-interaction
 RUN . /opt/venv/bin/activate && poetry build -f wheel -n && \
-  pip install --no-deps dist/*.whl && \
-  rm -rf dist *.egg-info
+    pip install --no-deps dist/*.whl && \
+    rm -rf dist *.egg-info
 
+RUN . /opt/venv/bin/activate && pip install rasa[transformers]
 # make sure we use the virtualenv
 ENV PATH="/opt/venv/bin:$PATH"
 
-RUN python -m spacy init fill-config docker/spacy-training/bg_config_cpu.cfg config.cfg
-RUN python -m spacy train config.cfg
+#RUN python -m spacy init fill-config docker/spacy-training/bg_config_cpu.cfg config.cfg
+#RUN mkdir corpus && ls -la && ls -la corpus && \
+#    echo ------------------------------------------------- && \
+#    cat config.cfg && \
+#    echo ------------------------------------------------- && \
+#    python -m spacy train config.cfg
 
 # start a new build stage
 FROM ${IMAGE_BASE_NAME}:base-${BASE_IMAGE_HASH} as runner
