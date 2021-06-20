@@ -2,8 +2,8 @@ language: "bg"
 
 pipeline:
 - name: HFTransformersNLP
-  model_weights: "roberta-small-bulgarian"
-  model_name: "bert"
+  model_name: "roberta"
+  model_weights: "/var/models/roberta-small-bulgarian"
 - name: LanguageModelTokenizer
 - name: LanguageModelFeaturizer
 - name: DIETClassifier

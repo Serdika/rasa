@@ -1,4 +1,4 @@
-# The image tagged with the 'spacy-xx' suffix
+# The image tagged with the 'spacy-bg' suffix
 ARG IMAGE_BASE_NAME=rasa/rasa
 ARG BASE_IMAGE_HASH=0fe25c12832040158b31572fa51170b75fd71dc0af8344ec2f5188f322afff78
 ARG BASE_BUILDER_IMAGE_HASH=3c37301fb584c651acd49f7b8f3eb674623138491ff7641c5bf591f80412ff77
@@ -20,6 +20,10 @@ RUN . /opt/venv/bin/activate && poetry build -f wheel -n && \
     pip install --no-deps dist/*.whl && \
     rm -rf dist *.egg-info
 
+RUN apt install git-lfs && \
+    git lfs install && \
+    git clone https://huggingface.co/iarfmoose/roberta-small-bulgarian /var/models/roberta-small-bulgarian
+
 RUN . /opt/venv/bin/activate && pip install rasa[transformers]
 # make sure we use the virtualenv
 ENV PATH="/opt/venv/bin:$PATH"
@@ -36,13 +40,15 @@ FROM ${IMAGE_BASE_NAME}:base-${BASE_IMAGE_HASH} as runner
 
 # copy everything from /opt
 COPY --from=builder /opt/venv /opt/venv
+COPY --from=builder /var/models /var/models
 
 # make sure we use the virtualenv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # update permissions & change user to not run as root
 WORKDIR /app
-RUN chgrp -R 0 /app && chmod -R g=u /app
+RUN chgrp -R 0 /app && chmod -R g=u /app && \
+    . /opt/venv/bin/activate && pip install transformers --upgrade
 USER 1001
 
 # Create a volume for temporary data
