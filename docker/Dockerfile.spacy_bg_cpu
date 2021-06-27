@@ -22,7 +22,7 @@ RUN . /opt/venv/bin/activate && poetry build -f wheel -n && \
 
 RUN apt install git-lfs && \
     git lfs install && \
-    git clone https://huggingface.co/iarfmoose/roberta-small-bulgarian /var/models/roberta-small-bulgarian
+    git clone https://huggingface.co/iarfmoose/roberta-small-bulgarian-pos /var/models/roberta-small-bulgarian
 
 RUN . /opt/venv/bin/activate && pip install rasa[transformers]
 # make sure we use the virtualenv
